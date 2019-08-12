@@ -3,6 +3,8 @@ A camera bounds visualizer editor tool.
 
 ![image](https://github.com/prashant-singh/camera-bounds-2D/blob/master/camera%20bounds1.gif)
 
+You can check out the art I used in the gif [here](https://0x72.itch.io/dungeontileset-ii).
+
 # Integration
 
 1. Create an empty game object in the hierarchy.
@@ -66,3 +68,5 @@ Set it to your need and it's done.
 And that's it!
 
 If you get stuck at somewhere let me know.
+
+
