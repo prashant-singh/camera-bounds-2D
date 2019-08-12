@@ -3,7 +3,7 @@ A camera bounds visualizer editor tool.
 
 ![image](https://github.com/prashant-singh/camera-bounds-2D/blob/master/camera%20bounds1.gif)
 
-You can check out the art I used in the gif [here](https://0x72.itch.io/dungeontileset-ii).
+> You can check out the art I used in the gif [here](https://0x72.itch.io/dungeontileset-ii).
 
 # Integration
 
