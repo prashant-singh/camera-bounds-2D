@@ -42,8 +42,8 @@ If not you can create an Awake() function like below.
 	void Awake()
 	{
 		bounds.Initialize(GetComponent<Camera>());
-        maxXPos = bounds.maxXlimit;
-        maxYPos = bounds.maxYlimit;
+        	maxXPos = bounds.maxXlimit;
+        	maxYPos = bounds.maxYlimit;
 	}
 ``` 
 bounds.Initialize(GetComponent<Camera>()); will initialize the bounds script with you current camera.
@@ -53,7 +53,7 @@ And the maxXPos and maxYPos will be assigned with the bounds calculated values.
 		void Update()
 		{
 			Vector3 currentPosition = transform.position;
-	        Vector3 targetPos = new Vector3(Mathf.Clamp(player.position.x, maxXPos.x, maxXPos.y), Mathf.Clamp(player.position.y, maxYPos.x, maxYPos.y), currPos.z);
+	        	Vector3 targetPos = new Vector3(Mathf.Clamp(player.position.x, maxXPos.x, maxXPos.y), Mathf.Clamp(player.position.y, maxYPos.x, maxYPos.y), currPos.z);
 			transform.position = Vector3.Lerp(currPos, targetPos, Time.deltaTime * speed);
 		}
 ```
