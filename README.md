@@ -50,12 +50,12 @@ bounds.Initialize(GetComponent<Camera>()); will initialize the bounds script wit
 And the maxXPos and maxYPos will be assigned with the bounds calculated values.
 
 ```csharp
-		void Update()
-		{
-			Vector3 currentPosition = transform.position;
-	        	Vector3 targetPos = new Vector3(Mathf.Clamp(player.position.x, maxXPos.x, maxXPos.y), Mathf.Clamp(player.position.y, maxYPos.x, maxYPos.y), currPos.z);
-			transform.position = Vector3.Lerp(currPos, targetPos, Time.deltaTime * speed);
-		}
+	void Update()
+	{
+		Vector3 currentPosition = transform.position;
+	        Vector3 targetPos = new Vector3(Mathf.Clamp(player.position.x, maxXPos.x, maxXPos.y), Mathf.Clamp(player.position.y, maxYPos.x, maxYPos.y), currPos.z);
+		transform.position = Vector3.Lerp(currPos, targetPos, Time.deltaTime * speed);
+	}
 ```
 Here we will clamp the x and y positions of our camera in the targetPos variable.
 Which will prevent our camera to go past the maximum and minimum x and y positions.
