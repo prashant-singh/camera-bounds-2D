@@ -2,29 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 
 [CustomEditor(typeof(CameraBounds2D))]
 public class CameraBounds2DEditor : Editor
 {
     CameraBounds2D _bounds;
+    readonly BoxBoundsHandle m_BoundsHandle = new BoxBoundsHandle();
 
     public void OnSceneGUI()
     {
         _bounds = (CameraBounds2D)target;
+        Matrix4x4 handleMatrix = _bounds.transform.localToWorldMatrix;
+        handleMatrix.SetRow(0, Vector4.Scale(handleMatrix.GetRow(0), new Vector4(1f, 1f, 0f, 1f)));
+        handleMatrix.SetRow(1, Vector4.Scale(handleMatrix.GetRow(1), new Vector4(1f, 1f, 0f, 1f)));
+        handleMatrix.SetRow(2, new Vector4(0f, 0f, 1f, _bounds.transform.position.z));
 
-        Vector3[] verts = new Vector3[] {
-            new Vector3(_bounds.transform.position.x+_bounds.boundX,_bounds.transform.position.y+_bounds.boundY),
-            new Vector3(_bounds.transform.position.x-_bounds.boundX,_bounds.transform.position.y+_bounds.boundY),
-            new Vector3(_bounds.transform.position.x-_bounds.boundX,_bounds.transform.position.y-_bounds.boundY),
-            new Vector3(_bounds.transform.position.x+_bounds.boundX,_bounds.transform.position.y-_bounds.boundY)
-        };
+        using (new Handles.DrawingScope(handleMatrix))
+        {
+            m_BoundsHandle.center = _bounds.offset;
+            m_BoundsHandle.size = _bounds.scaleBound;
+            m_BoundsHandle.SetColor(Color.white);
+            EditorGUI.BeginChangeCheck();
+            m_BoundsHandle.DrawHandle();
+            Rect rect = new Rect(m_BoundsHandle.center.x-(m_BoundsHandle.size.x/2), m_BoundsHandle.center.y - (m_BoundsHandle.size.y / 2), m_BoundsHandle.size.x, m_BoundsHandle.size.y);
+            Handles.DrawSolidRectangleWithOutline(rect, new Color(1, 1, 1, 0.1f), Color.yellow);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_bounds, string.Format("Modify {0}", ObjectNames.NicifyVariableName(_bounds.GetType().Name)));
 
-        Handles.DrawSolidRectangleWithOutline(verts, new Color(1, 1, 1, 0.1f), Color.yellow);
+                // test for size change after using property setter in case input data was sanitized
+                Vector2 oldSize = _bounds.scaleBound;
+                _bounds.scaleBound = m_BoundsHandle.size;
 
-        _bounds.boundX = Handles.ScaleValueHandle(_bounds.boundX, new Vector3(verts[0].x, _bounds.transform.position.y, _bounds.transform.position.z), Quaternion.identity, 3, Handles.CubeCap, 0.1f);
-        _bounds.boundX = Handles.ScaleValueHandle(-_bounds.boundX, new Vector3(verts[1].x, _bounds.transform.position.y, _bounds.transform.position.z), Quaternion.identity, 3, Handles.CubeCap, 0.1f);
-        _bounds.boundY = Handles.ScaleValueHandle(_bounds.boundY, new Vector3(_bounds.transform.position.x, verts[0].y, _bounds.transform.position.z), Quaternion.identity, 3, Handles.CubeCap, 0.1f);
-        _bounds.boundY = Handles.ScaleValueHandle(-_bounds.boundY, new Vector3(_bounds.transform.position.x, verts[2].y, _bounds.transform.position.z), Quaternion.identity, 3, Handles.CubeCap, 0.1f);
+                // because projection of offset is a lossy operation, only do it if the size has actually changed
+                // this check prevents drifting while dragging handle when size is zero (case 863949)
+                if (_bounds.scaleBound != oldSize)
+                    _bounds.offset = m_BoundsHandle.center;
+            }
+        }
 
 
     }
