@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour
 	{
 		Vector3 currentPosition = transform.position;
 		Vector3 targetPosition = player.position;
-		transform.position = Vector3.Lerp(currPos, targetPos, Time.deltaTime * speed);
+		transform.position = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * speed);
 	}
 }
 ```
@@ -42,8 +42,8 @@ If not you can create an Awake() function like below.
 	void Awake()
 	{
 		bounds.Initialize(GetComponent<Camera>());
-        	maxXPos = bounds.maxXlimit;
-        	maxYPos = bounds.maxYlimit;
+        	maxXPositions = bounds.maxXlimit;
+        	maxYPositions = bounds.maxYlimit;
 	}
 ``` 
 bounds.Initialize(GetComponent<Camera>()); will initialize the bounds script with you current camera.
@@ -53,8 +53,8 @@ And the maxXPos and maxYPos will be assigned with the bounds calculated values.
 	void Update()
 	{
 		Vector3 currentPosition = transform.position;
-	        Vector3 targetPos = new Vector3(Mathf.Clamp(player.position.x, maxXPos.x, maxXPos.y), Mathf.Clamp(player.position.y, maxYPos.x, maxYPos.y), currPos.z);
-		transform.position = Vector3.Lerp(currPos, targetPos, Time.deltaTime * speed);
+	        Vector3 targetPosition = new Vector3(Mathf.Clamp(player.position.x, maxXPositions.x, maxXPositions.y), Mathf.Clamp(player.position.y, maxYPositions.x, maxYPositions.y), currPos.z);
+		transform.position = Vector3.Lerp(currentPosition, targetPosition, Time.deltaTime * speed);
 	}
 ```
 Here we will clamp the x and y positions of our camera in the targetPos variable.
